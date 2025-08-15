@@ -1,0 +1,113 @@
+@font-face {
+    font-family: buz1;
+    src: url(fonte/Itim-Regular.ttf);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: grid;
+    grid-template-areas:
+        "header header header"
+        "aside main main"
+        "footer footer footer";
+    grid-template-columns: 1fr 2fr 2fr;
+    background-color: #e4e4e4;
+}
+
+header {
+    grid-area: header;
+    position: relative;
+    width: 100%;
+    height: 10rem;
+    background-image: linear-gradient(#fdfdfd, #e4e4e4);
+}
+
+header section {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+#divlogo, #divperfil {
+    width: 20%;
+    height: 100%;
+}
+
+#divlogo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#divlogo img {
+    width: 15rem;
+}
+
+#divnav {
+    width: 60%;
+    height: 100%;
+}
+
+aside {
+    grid-area: aside;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(#e4e4e4, #fdfdfd, #fdfdfd, #fdfdfd, #fdfdfd);
+}
+
+main {
+    grid-area: main;
+    position: relative;
+    width: 100%;
+    height: 50rem;
+    background-image: url(imagens/colmeianova.png);
+    border-radius: 2rem;
+}
+
+#fundo {
+    width: 100%;
+    height: 20rem;
+    background-image: linear-gradient(#e4e4e4, transparent, transparent, transparent, #fdfdfd);
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#fundo button {
+    width: 25%;
+    height: 7rem;
+    border-radius: 2rem;
+    border: none;
+    background-color: #fdfdfd;
+    text-align: center;
+    font-size: 3rem;
+    transition: 0.2s;
+    cursor: pointer;
+    color: #3a1c12;
+    font-family: buz1;
+}
+
+#fundo button:hover {
+    scale: 105%;
+    filter: brightness(97.5%);
+    border: 0.5rem solid #ffda33;
+}
+
+#secmain {
+    width: 100%;
+    height: calc(100% - 20rem);
+    background-color: #fdfdfd;
+}
+
+footer {
+    grid-area: footer;
+    position: relative;
+    width: 100%;
+    height: 10rem;
+    background-image: linear-gradient(#fdfdfd, #e4e4e4);
+}

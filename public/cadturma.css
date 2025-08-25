@@ -129,8 +129,109 @@ main {
     position: relative;
     width: 100%;
     height: 60rem;
-    background-color: #fdfdfd;
+    background-image: url(imagens/colmeianova.png);
     border-radius: 2rem 0 0 0;
+}
+
+#fundo{
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(#e4e4e4, transparent, transparent, transparent, transparent, transparent, #fdfdfd);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#secmain{
+    width: 60%;
+    height: 60%;
+    background-color: #fdfdfd;
+    border-radius: 5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#divinput{
+    width: 80%;
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#div1{
+    width: 90%;
+    height: 3rem;
+}
+
+#div2{
+    width: 90%;
+    height: 9rem;
+}
+
+#inputnome{
+    width: 100%;
+    height: 100%;
+    border: 0.2rem solid #e4e4e4;
+    border-radius: 1rem;
+    color: #3a1c12;
+    font-family: buz1;
+    font-size: 2rem;
+}
+
+#inputdesc{
+    width: 100%;
+    height: 100%;
+    border: 0.2rem solid #e4e4e4;
+    border-radius: 1rem;
+    color: #3a1c12;
+    font-family: buz1;
+    font-size: 2rem;
+}
+
+input:focus{
+    outline: 0.2rem solid #ffda33;
+}
+
+#divconc{
+    width: 80%;
+    height: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#butvolt{
+    width: 40%;
+    height: 5rem;
+    border: 0.25rem solid #e4e4e4;
+    border-radius: 2rem;
+    background-color: #fdfdfd;
+    color: #3a1c12;
+    font-family: buz1;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#butconc{
+    width: 40%;
+    height: 5rem;
+    border: 0.25rem solid #ffda33;
+    border-radius: 2rem;
+    background-color: #ffda33;
+    color: #3a1c12;
+    font-family: buz1;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#divconc button:hover{
+    filter: brightness(95%);
 }
 
 footer {

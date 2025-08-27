@@ -153,6 +153,13 @@ main {
     justify-content: space-evenly;
 }
 
+#secmaintitle{
+    color: #3a1c12;
+    font-family: buz1;
+    font-size: 3rem;
+    margin-top: 2%;
+}
+
 #divinput{
     width: 80%;
     height: 70%;
@@ -238,7 +245,7 @@ footer {
     grid-area: footer;
     position: relative;
     width: 100%;
-    height: 10rem;
+    height: 15rem;
     background-image: linear-gradient(#fdfdfd, #e4e4e4);
 }
 

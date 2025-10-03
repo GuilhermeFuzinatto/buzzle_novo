@@ -80,20 +80,103 @@ main {
     width: 100%;
     height: 20%;
     display: flex;
-    text-align: center;
+    align-items: center;
     justify-content: center;
+    font-family: buz1;
+    color: #3a1c12;
+    font-size: 4rem;
 }
 
 .divinput{
     background-color: green;
     width: 100%;
     height: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.divtext{
+    width: 80%;
+    height: 3.9rem;
+    border-radius: 1rem;
+}
+
+.divsenha{
+    width: calc(80% + 0.2rem);
+    height: 3.9rem;
+    border-radius: 1rem;
+    background-color: #e4e4e4;
+    cursor: pointer;
+}
+
+input{
+    transition: 0.2s;
+}
+
+input:focus{
+    outline: none;
+    border: 0.2rem solid #ffda33 !important;
+}
+
+#alemail, #alnome, #premail, #prnome{
+    width: 100%;
+    height: 3.5rem;
+    border: 0.2rem solid #e4e4e4;
+    border-radius: 1rem;
+    color: #3a1c12;
+    font-family: buz1;
+    font-size: 2rem;
+}
+
+#alsenha, #prsenha{
+    width: 85%;
+    height: 3.5rem;
+    border: 0.2rem solid #e4e4e4;
+    border-radius: 1rem;
+    color: #3a1c12;
+    font-family: buz1;
+    font-size: 2rem;
 }
 
 .divbotao{
     background-color: yellow;
     width: 100%;
     height: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.volt{
+    width: 40%;
+    height: 5rem;
+    border: 0.25rem solid #e4e4e4;
+    border-radius: 2rem;
+    background-color: #fdfdfd;
+    color: #3a1c12;
+    font-family: buz1;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.conc{
+    width: 40%;
+    height: 5rem;
+    border: 0.25rem solid #ffda33;
+    border-radius: 2rem;
+    background-color: #ffda33;
+    color: #3a1c12;
+    font-family: buz1;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.divbotao button:hover{
+    filter: brightness(95%);
 }
 
 footer {

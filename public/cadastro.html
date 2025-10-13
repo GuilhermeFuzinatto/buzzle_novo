@@ -7,6 +7,7 @@
         <title>Cadastro - Buzzle</title>
     </head>
     <body>
+        <script src="cadastro.js"></script>
         <header>
             <section>
                 <div id="divlogo">
@@ -27,7 +28,7 @@
                     <div class="divinput">
                         <div class="divtext"><input type="text" placeholder="e-mail" id="alemail"></div>
                         <div class="divtext"><input type="text" placeholder="nome de usuário" id="alnome"></div>
-                        <div class="divsenha"><input type="password" placeholder="senha" id="alsenha"><img src="imagens/venao.png"></div>
+                        <div class="divsenha" onclick="verSenhaProf()"><input type="password" placeholder="senha" id="alsenha"><img src="imagens/venao.png"></div>
                     </div>
                     <div class="divbotao">    
                         <button class="volt">Voltar</button>
@@ -39,7 +40,7 @@
                     <div class="divinput">
                         <div class="divtext"><input type="text" placeholder="e-mail" id="premail"></div>
                         <div class="divtext"><input type="text" placeholder="nome de usuário" id="prnome"></div>
-                        <div class="divsenha" id="senhaprof" onclick="verSenhaProf()"><input type="password" placeholder="senha" id="prsenha"><img src="imagens/venao.png"></div>
+                        <div class="divsenha" onclick="verSenhaProf()"><input type="password" placeholder="senha" id="prsenha"><img src="imagens/venao.png"></div>
                     </div>
                     <div class="divbotao">
                         <button class="volt">Voltar</button>

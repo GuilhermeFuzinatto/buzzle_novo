@@ -1,6 +1,17 @@
+function verSenhaAluno() {
+    const inputao = document.getElementById('prsenha');
+    if (inputao.type === 'password') {
+        inputao.type = 'text';
+    } else {
+        inputao.type = 'password';
+    }
+}
+
 function verSenhaProf() {
     const inputao = document.getElementById('prsenha');
-    const divzao = document.getElementById('senhaprof');
-    inputao.type = 'text';
-    divzao.onclick = 'esconderSenhaProf';
+    if (inputao.type === 'password') {
+        inputao.type = 'text';
+    } else {
+        inputao.type = 'password';
+    }
 }

@@ -23,7 +23,7 @@ async function cadastrarTurma(event) {
         const result = await response.json();
         if (response.ok) {
             alert("cadastrado com sucesso!");
-            document.getElementById("formolario").reset();
+            document.getElementById("secmain").reset();
             listarTurma(); // atualiza lista automaticamente
         } else {
             alert(`Erro: ${result.message}`);

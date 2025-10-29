@@ -226,12 +226,13 @@ app.put('/prof/email/:email', (req, res) => {
 
 // Cadastrar turma
 app.post('/turma', (req, res) => {
-    const { tu_nome, tu_desc, tu_pr_id } = req.body;
+    const { tu_nome, tu_desc} = req.body;
 
-    if (!tu_nome || !tu_pr_id) {
+    if (!tu_nome) {
         return res.status(400).send('nome e id do professor são obrigatórios.');
     }
 
+    /*
     // Verifica se o professor existe
     const checkProf = `SELECT * FROM Prof WHERE pr_id = ?`;
     db.get(checkProf, [tu_pr_id], (err, row) => {
@@ -246,15 +247,16 @@ app.post('/turma', (req, res) => {
         }
 
         // Se encontrou o professor, insere a turma
-        const query = `INSERT INTO turma (tu_nome, tu_desc, tu_pr_id) VALUES (?, ?, ?)`;
-        db.run(query, [tu_nome, tu_desc, tu_pr_id], function (err) {
+    */
+        const query = `INSERT INTO turma (tu_nome, tu_desc) VALUES (?, ?)`;
+        db.run(query, [tu_nome, tu_desc], function (err) {
             if (err) {
                 return res.status(500).send('Erro ao cadastrar.');
             }
             res.status(201).send({ id: this.lastID, message: 'cadastrado com sucesso.' });
         });
     });
-});
+//});
 
 
 // Listar turmas

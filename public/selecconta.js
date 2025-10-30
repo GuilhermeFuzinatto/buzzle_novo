@@ -23,10 +23,9 @@ async function listarAluno() {
             tabela.innerHTML = 'Nenhum aluno encontrado.';
         } else {
             aluno.forEach(aluno => {
-                tabela.innerHTML = `
-                    <div>${aluno.al_nome}</div>
-                `;
-                tabela.appendChild(tabela);
+                const div = document.createElement('div');
+                div.textContent = aluno.al_nome;
+                tabela.appendChild(div);
             });
         }
     } catch (error) {
@@ -51,7 +50,7 @@ async function listarProf() {
         const response = await fetch(url);
         const prof = await response.json();
 
-        const tabela = document.getElementById('secprof');
+        const tabela = document.getElementById('secprofs');
         tabela.innerHTML = ''; // Limpa a tabela antes de preencher
 
         if (prof.length === 0) {
@@ -59,10 +58,9 @@ async function listarProf() {
             tabela.innerHTML = 'Nenhum profesor encontrado.';
         } else {
             prof.forEach(prof => {
-                tabela.innerHTML = `
-                    <div>${prof.pr_nome}</div>
-                `;
-                tabela.appendChild(tabela);
+                const div = document.createElement('div');
+                div.textContent = prof.pr_nome;
+                tabela.appendChild(div);
             });
         }
     } catch (error) {

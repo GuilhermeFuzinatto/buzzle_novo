@@ -16,7 +16,7 @@ async function listarAluno() {
         const aluno = await response.json();
 
         const tabela = document.getElementById('secalunos');
-        tabela.innerHTML = ''; // Limpa a tabela antes de preencher
+        //tabela.innerHTML = ''; // Limpa a tabela antes de preencher
 
         if (aluno.length === 0) {
             // Caso não encontre cadastros, exibe uma mensagem
@@ -51,7 +51,7 @@ async function listarProf() {
         const prof = await response.json();
 
         const tabela = document.getElementById('secprofs');
-        tabela.innerHTML = ''; // Limpa a tabela antes de preencher
+        //tabela.innerHTML = ''; // Limpa a tabela antes de preencher
 
         if (prof.length === 0) {
             // Caso não encontre cadastros, exibe uma mensagem

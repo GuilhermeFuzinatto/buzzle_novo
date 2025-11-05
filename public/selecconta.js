@@ -25,6 +25,18 @@ async function listarAluno() {
             aluno.forEach(aluno => {
                 const div = document.createElement('div');
                 div.textContent = aluno.al_nome;
+
+                div.onclick = () => {
+                    const dados = {
+                        tipo: 'aluno',
+                        id: aluno.al_id,
+                        email: aluno.al_email,
+                        nome: aluno.al_nome
+                    };
+                    localStorage.setItem('usuario', JSON.stringify(dados));
+                    window.location.href = 'homealuno.html'; // abre o site "na conta"
+                };
+
                 tabela.appendChild(div);
             });
         }
@@ -60,6 +72,18 @@ async function listarProf() {
             prof.forEach(prof => {
                 const div = document.createElement('div');
                 div.textContent = prof.pr_nome;
+
+                div.onclick = () => {
+                    const dados = {
+                        tipo: 'prof',
+                        id: prof.pr_id,
+                        email: prof.pr_email,
+                        nome: prof.pr_nome
+                    };
+                    localStorage.setItem('usuario', JSON.stringify(dados));
+                    window.location.href = 'homeprof.html'; // abre o site "na conta"
+                };
+
                 tabela.appendChild(div);
             });
         }

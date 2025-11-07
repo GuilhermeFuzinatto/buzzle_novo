@@ -36,6 +36,8 @@ async function listarAluno() {
                     localStorage.setItem('usuario', JSON.stringify(dados));
                     window.location.href = 'homealuno.html'; // abre o site "na conta"
                 };
+                
+                div.style.cursor = 'pointer';
 
                 tabela.appendChild(div);
             });

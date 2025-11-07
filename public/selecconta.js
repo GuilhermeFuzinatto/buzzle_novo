@@ -34,7 +34,7 @@ async function listarAluno() {
                         nome: aluno.al_nome
                     };
                     localStorage.setItem('usuario', JSON.stringify(dados));
-                    window.location.href = 'homealuno.html'; // abre o site "na conta"
+                    window.location.href = 'perfil.html'; // abre o site "na conta"
                 };
                 
                 div.style.cursor = 'pointer';

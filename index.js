@@ -226,7 +226,7 @@ app.put('/prof/email/:email', (req, res) => {
 
 // Cadastrar turma
 app.post('/turma', (req, res) => {
-    const { tu_nome, tu_desc} = req.body;
+    const { tu_nome, tu_desc, tu_pr_id} = req.body;
 
     if (!tu_nome) {
         return res.status(400).send('nome e id do professor são obrigatórios.');
@@ -248,8 +248,8 @@ app.post('/turma', (req, res) => {
 
         // Se encontrou o professor, insere a turma
     */
-        const query = `INSERT INTO turma (tu_nome, tu_desc) VALUES (?, ?)`;
-        db.run(query, [tu_nome, tu_desc], function (err) {
+        const query = `INSERT INTO turma (tu_nome, tu_desc, tu_pr_id) VALUES (?, ?, ?)`;
+        db.run(query, [tu_nome, tu_desc, tu_pr_id], function (err) {
             if (err) {
                 return res.status(500).send('Erro ao cadastrar.');
             }

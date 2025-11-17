@@ -51,25 +51,19 @@ async function cadastrarTurma(event) {
 
 // Função para listar as turmas
 async function listarTurma() {
-const tu_nome = document.getElementById('nome').value.trim();  // Pega o valor do nome digitado no input
     
     let url = '/turma';  // URL padrão para todos os clientes
-
-    if (tu_nome) {
-        // Se CPF foi digitado, adiciona o parâmetro de consulta
-        url += `?tu_nome=${tu_nome}`;
-    }
 
     try {
         const response = await fetch(url);
         const turma = await response.json();
 
-        const sec = document.getElementById('secsoturmas');
+        const sec = document.getElementById('subsecturmas');
         sec.innerHTML = ''; // Limpa a tabela antes de preencher
 
         if (turma.length === 0) {
             // Caso não encontre cadastros, exibe uma mensagem
-            sec.innerHTML = '<div>n tem turma<div>';
+            sec.innerHTML = '<div class="divtur">n tem turma<div>';
         } else {
             turma.forEach(turma => {
                 /*sec.innerHTML = `
@@ -78,12 +72,7 @@ const tu_nome = document.getElementById('nome').value.trim();  // Pega o valor d
                 `;
                 */
                 sec.innerHTML += `
-                    <div>
-                        ${turma.tu_id}
-                        ${turma.tu_nome}
-                        ${turma.tu_desc}
-                        ${turma.tu_pr_id}
-                    </div>
+                    <button class="divtur">${turma.tu_nome}</button>
                 `
             });
         }

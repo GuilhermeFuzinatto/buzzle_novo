@@ -1,14 +1,29 @@
+const user = JSON.parse(localStorage.getItem('usuario'));
+
+/*
+if (user) {
+    const spacenome = document.getElementById('teunome');
+    const spaceid = document.getElementById('teuid');
+    
+    spacenome.textContent = user.nome;
+    spaceid.textContent = user.id;
+}
+*/
+
 async function cadastrarTurma(event) {
     event.preventDefault();
+    /*
     const tu_id = document.getElementById("id").value;
 
     if(tu_id){
         alert("O ID é atribuído automaticamente, sendo utilizado apenas para atualização.");
     }
+    */
 
     const turma = {
         tu_nome: document.getElementById("inputnome").value,
-        tu_desc: document.getElementById("inputdesc").value
+        tu_desc: document.getElementById("inputdesc").value,
+        tu_pr_id: user.id
     };
 
     try {

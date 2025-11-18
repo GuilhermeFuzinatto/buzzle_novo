@@ -4,5 +4,5 @@ if (user) {
     const spaceid = document.getElementById('teuid');
     
     spacenome.textContent = user.nome;
-    spaceid.textContent = user.id;
+    spaceid.textContent = "#" + user.id;
 } 

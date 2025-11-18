@@ -72,7 +72,7 @@ async function listarTurma() {
                 `;
                 */
                 sec.innerHTML += `
-                    <button class="divtur" onclick="selecTurma">${turma.tu_nome}</button>
+                    <button class="divtur" onclick="selecTurma()">${turma.tu_nome}</button>
                 `
             });
         }

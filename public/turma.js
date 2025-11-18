@@ -4,5 +4,5 @@ if (turminha) {
     const spacedesc = document.getElementById('turmadesc');
     
     spacenome.textContent = turminha.nome;
-    spacedesc.textContent = "#" + turminha.id;
+    spacedesc.textContent = turminha.desc;
 } 

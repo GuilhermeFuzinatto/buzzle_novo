@@ -72,7 +72,7 @@ async function listarTurma() {
                 `;
                 */
                 sec.innerHTML += `
-                    <button class="divtur" onclick="selecTurma()">${turma.tu_nome}</button>
+                    <button class="divtur" onclick="selecTurma(${turma.tu_id}, '${turma.tu_nome}', '${turma.tu_desc}', ${turma.tu_pr_id})>${turma.tu_nome}</button>
                 `
             });
         }
@@ -123,15 +123,15 @@ async function atualizarTurma() {
     }
 }
 
-async function selecTurma(){
+function selecTurma(id, nome, desc, prid){
     const dadosTurma = {
         tipo: 'turma',
-        id,
-        nome,
-        desc,
-        prid
+        id: id,
+        nome: nome,
+        desc: desc,
+        prid: prid
     };
 
     localStorage.setItem('turma', JSON.stringify(dadosTurma));
-    window.location.href = 'turma.html'; // abre o site "na turma"
+    window.location.href = 'turma.html';
 }

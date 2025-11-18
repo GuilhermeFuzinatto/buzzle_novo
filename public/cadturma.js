@@ -126,9 +126,10 @@ async function atualizarTurma() {
 async function selecTurma(){
     const dadosTurma = {
         tipo: 'turma',
-        id: turma.tu_id,
-        nome: turma.tu_nome,
-        prid: turma.tu_pr_id
+        id,
+        nome,
+        desc,
+        prid
     };
 
     localStorage.setItem('turma', JSON.stringify(dadosTurma));

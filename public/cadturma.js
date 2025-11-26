@@ -1,5 +1,3 @@
-console.log("CARREGOU O SCRIPT");
-
 const user = JSON.parse(localStorage.getItem('usuario'));
 
 /*

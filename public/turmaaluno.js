@@ -1,4 +1,6 @@
+const user = JSON.parse(localStorage.getItem('usuario'));
 const turminha = JSON.parse(localStorage.getItem('turma'));
+
 if (turminha) {
     const spacenome = document.getElementById('turmanome');
     const spacedesc = document.getElementById('turmadesc');

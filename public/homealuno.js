@@ -1,3 +1,5 @@
+const user = JSON.parse(localStorage.getItem('usuario'));
+
 // Função para listar as turmas
 async function listarTurma() {
     

@@ -133,5 +133,11 @@ function selecTurma(id, nome, desc, prid){
     };
 
     localStorage.setItem('turma', JSON.stringify(dadosTurma));
-    window.location.href = 'turma.html';
+
+    if(user.tipo = 'aluno'){
+        window.location.href = 'turmaaluno.html';
+    }else if(user.tipo = 'prof'){
+        window.location.href = 'turmaprof.html';
+    }
+    
 }

@@ -1,3 +1,5 @@
+console.log("CARREGOU O SCRIPT");
+
 const user = JSON.parse(localStorage.getItem('usuario'));
 
 /*
@@ -72,7 +74,7 @@ async function listarTurma() {
                 `;
                 */
                 sec.innerHTML += `
-                    <button class="divtur" onclick="selecTurma(${turma.tu_id}, '${turma.tu_nome}', '${turma.tu_desc}', ${turma.tu_pr_id})>${turma.tu_nome}</button>
+                    <button class="divtur" onclick="selecTurma(${turma.tu_id}, '${turma.tu_nome}', '${turma.tu_desc}', ${turma.tu_pr_id})">${turma.tu_nome}</button>
                 `
             });
         }

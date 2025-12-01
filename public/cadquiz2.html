@@ -3,10 +3,10 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="cadquiz.css">
+        <link rel="stylesheet" href="cadquiz2.css">
         <title>Criar Quiz - Buzzle</title>
     </head>
-    <body onload="listarTurma()">
+    <body onload="criarPergunta()">
         <header>
             <section>
                 <div id="divlogo">
@@ -42,7 +42,17 @@
         </aside>
         <main>
             <section id="fundo">
-                
+                <form id="secmain">
+                    <section id="sectipo">
+                        <div id="tipo1"></div>
+                        <div id="tipo2"></div>
+                        <div id="tipo3"></div>
+                    </section>
+                    <section id="secenun">
+                        <p id="enuntitle">Enunciado</p>
+                        <textarea id="enuntxt"></textarea>
+                    </section>
+                </form>
             </section>
         </main>
         <footer>
@@ -57,6 +67,6 @@
                 </div>
             </section>
         </footer>
-        <script src="cadquiz.js"></script>
+        <script src="cadquiz2.js"></script>
     </body>
 </html>

@@ -6,54 +6,54 @@
         <link rel="stylesheet" href="cadquiz2.css">
         <title>Criar Quiz - Buzzle</title>
     </head>
-    <body onload="criarPergunta()">
+
+    <!-- agora o onload só chama o que o JS precisa -->
+    <body>
         <header>
             <section>
                 <div id="divlogo">
                     <img src="imagens/logobuzzle.png">
                 </div>
-                <div id="divnav">
-                    
-                </div>
-                <div id="divperfil">
-                    
-                </div>
+                <div id="divnav"></div>
+                <div id="divperfil"></div>
             </section>
         </header>
+
         <aside>
             <section id="secnav">
-                <button class="navbut">
-                    Configurações
-                </button>
-                <button class="navbut">
-                    Início
-                </button>
+                <button class="navbut">Configurações</button>
+                <button class="navbut">Início</button>
             </section>
+
             <section id="secturmas">
                 <p id="astitulo">Questões</p>
-                <section id="subsecquest">
-                    <!--
-                    <button class="divtur"></button>
-                    <button class="divtur"></button>    
-                    <button class="divtur"></button>
-                    -->
-                </section>
+
+                <!-- AQUI vão os cards gerados via JS -->
+                <section id="listaQuestoes"></section>
             </section>
         </aside>
+
         <main>
             <section id="fundo">
                 <form id="secmain">
+                    
+                    <!-- Tipo da questão -->
                     <section id="sectipo">
                         <button id="tipo1" type="button">única correta</button>
                         <button id="tipo2" type="button">múltiplas corretas</button>
                         <button id="tipo3" type="button">verdadeiro ou falso</button>
                     </section>
+
+                    <!-- Enunciado -->
                     <section id="secenun">
                         <p id="enuntitle">Enunciado</p>
                         <textarea id="enuntxt"></textarea>
                     </section>
+
+                    <!-- Alternativas -->
                     <section id="secalt">
                         <p id="alttitle">Alternativas</p>
+
                         <div>
                             <label class="checklabel">
                                 <input type="checkbox" class="checkinput">
@@ -61,6 +61,7 @@
                             </label>
                             <input type="text" placeholder="Alternativa 1">
                         </div>
+
                         <div>
                             <label class="checklabel">
                                 <input type="checkbox" class="checkinput">
@@ -68,6 +69,7 @@
                             </label>
                             <input type="text" placeholder="Alternativa 2">
                         </div>
+
                         <div>
                             <label class="checklabel">
                                 <input type="checkbox" class="checkinput">
@@ -75,6 +77,7 @@
                             </label>
                             <input type="text" placeholder="Alternativa 3">
                         </div>
+
                         <div>
                             <label class="checklabel">
                                 <input type="checkbox" class="checkinput">
@@ -83,21 +86,26 @@
                             <input type="text" placeholder="Alternativa 4">
                         </div>
                     </section>
+
                 </form>
             </section>
         </main>
+
         <footer>
             <section id="secfooter">
                 <div></div>
+
                 <div class="divfot">
                     <img src="imagens/ccm.png">
                     <img src="imagens/governo.png">
                 </div>
+
                 <div class="divfot">
                     <img src="imagens/marsela.png">
                 </div>
             </section>
         </footer>
+
         <script src="cadquiz2.js"></script>
     </body>
 </html>

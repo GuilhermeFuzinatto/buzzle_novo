@@ -12,6 +12,13 @@ window.onload = () => {
     document.getElementById("tipo1").focus();
 };
 
+// ===================== AO SAIR DA PÁGINA =====================
+
+window.addEventListener("beforeunload", function (e) {
+    e.preventDefault();
+    e.returnValue = "";
+});
+
 // ===================== CRIAR CARD NO ASIDE =====================
 
 function criarQuestaoNoAside() {
@@ -38,7 +45,7 @@ function criarQuestaoNoAside() {
     // cria botão de adicionar
     const botaoAdd = document.createElement("button");
     botaoAdd.id = "adicionarQuestao";
-    botaoAdd.innerText = "+ adicionar questão";
+    botaoAdd.innerText = "Adicionar Questão";
 
     botaoAdd.onclick = () => {
         salvarQuestaoAtual();

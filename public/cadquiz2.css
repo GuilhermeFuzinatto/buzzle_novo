@@ -126,6 +126,12 @@ aside {
     border-radius: 1.5rem;
     cursor: pointer;
     transition: 0.5s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #3a1c12;
+    font-family: buz1;
+    font-size: 1.5rem;
 }
 
 .questaoCard:hover{
@@ -134,13 +140,21 @@ aside {
 }
 
 #adicionarQuestao{
-    width: 90%;
-    height: 4.5rem;
-    background-color: #fdfdfd;
-    border: 0.25rem solid #e4e4e4;
-    border-radius: 1.5rem;
+    width: 70%;
+    height: 3.5rem;
+    background-color: #ffda33;
+    border: 0.25rem solid #ffda33;
+    border-radius: 1rem;
     cursor: pointer;
     transition: 0.5s;
+    color: #3a1c12;
+    font-family: buz1;
+    font-size: 1.25rem;
+}
+
+#adicionarQuestao:hover{
+    filter: brightness(95%);
+    scale: 105%;
 }
 
 main {

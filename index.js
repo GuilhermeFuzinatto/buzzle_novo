@@ -318,7 +318,7 @@ app.post('/quiz', (req, res) => {
         return res.status(400).send('todos os campos são obrigatórios.');
     }
 
-    const query = `INSERT INTO Quiz (qz_nome, qz_valor, qz_prazo VALUES (?, ?, ?)`;
+    const query = `INSERT INTO Quiz (qz_nome, qz_valor, qz_prazo) VALUES (?, ?, ?)`;
     db.run(query, [qz_nome, qz_valor, qz_prazo], function (err) {
         if (err) {
             return res.status(500).send('Erro ao cadastrar.');

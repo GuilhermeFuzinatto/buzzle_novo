@@ -233,3 +233,59 @@ function voltarCheckbox() {
         }
     });
 }
+
+// ===============================================================
+// ========================= SALVAR QUIZ =========================
+// ===============================================================
+
+async function salvarTudo() {
+    salvarQuestaoAtual(); // salva a questão que estiver sendo editada
+
+    const quiz_id = localStorage.getItem("quiz_id");
+
+    for (const num in questoes) {
+        const q = questoes[num];
+
+        // 1. Enviar pergunta
+        const resPerg = await fetch("/pergunta", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                pe_enunciado: q.enunciado,
+                pe_qz_id: quiz_id
+            })
+        });
+
+        const dadosPerg = await resPerg.json();
+        const pergunta_id = dadosPerg.id;
+
+        // 2. Enviar alternativas
+        for (let i = 0; i < q.alternativas.length; i++) {
+            await fetch("/alternativa", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    av_texto: q.alternativas[i],
+                    av_correta: q.certas.includes(i) ? 1 : 0,
+                    av_pe_numero: pergunta_id
+                })
+            });
+        }
+    }
+
+    alert("Quiz salvo com sucesso!");
+}
+
+// ===============================================================
+// ========================== CANCELAR ===========================
+// ===============================================================
+
+function cancelarCriacao() {
+    if (!confirm("Deseja realmente cancelar o quiz?")) return;
+
+    // só apaga o ID temporário, o quiz ainda não foi salvo no banco
+    localStorage.removeItem("quiz_id");
+
+    window.location.href = "cadquiz.html";
+}
+

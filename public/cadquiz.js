@@ -66,3 +66,28 @@ const minuto = String(agora.getMinutes()).padStart(2, '0');
 const dataAtual = `${ano}-${mes}-${dia}T${hora}:${minuto}`;
 
 input.min = dataAtual;
+
+// Função pra salvar o quiz
+async function salvarQuiz() {
+    const nome = document.getElementById("inputnome").value;
+    const valor = document.getElementById("inputvalor").value;
+    const prazo = document.getElementById("inputprazo").value;
+
+    const res = await fetch("/quiz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            qz_nome: nome,
+            qz_valor: valor,
+            qz_prazo: prazo
+        })
+    });
+
+    const dados = await res.json();
+
+    // guardar ID do quiz pra usar no cadquiz2
+    localStorage.setItem("quiz_id", dados.id);
+
+    // ir para a página de perguntas
+    window.location.href = "cadquiz2.html";
+}

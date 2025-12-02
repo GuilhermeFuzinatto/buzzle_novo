@@ -273,7 +273,66 @@ async function salvarTudo() {
         }
     }
 
-    alert("Quiz salvo com sucesso!");
+    abrirModalPublicarQuiz(quiz_id);
+}
+
+// ===============================================================
+// ========================= ABRIR MODAL =========================
+// ===============================================================
+
+function abrirModalPublicarQuiz(quiz_id) {
+    window.quizRecemCriado = quiz_id;
+
+    fetch("/turma")
+        .then(res => res.json())
+        .then(turmas => {
+            let lista = document.getElementById("listaTurmas");
+            lista.innerHTML = "";
+
+            turmas.forEach(t => {
+                let div = document.createElement("div");
+                div.innerHTML = `
+                    <label>
+                        <input type="checkbox" class="turmaCheck" value="${t.tu_id}">
+                        ${t.tu_nome}
+                    </label>
+                `;
+                lista.appendChild(div);
+            });
+
+            document.getElementById("modalPublicar").style.display = "flex";
+        });
+}
+
+function fecharModal() {
+    document.getElementById("modalPublicar").style.display = "none";
+}
+
+// ===============================================================
+// ==================== CONFIRMAR PUBLICAÇÃO =====================
+// ===============================================================
+
+function confirmarPublicacao() {
+    const turmasSelecionadas = [...document.querySelectorAll(".turmaCheck:checked")]
+        .map(t => t.value);
+
+    const visibilidade = document.querySelector("input[name=visibilidade]:checked").value;
+
+    fetch("/publicarQuiz", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            quiz_id: window.quizRecemCriado,
+            turmas: turmasSelecionadas,
+            visibilidade: visibilidade
+        })
+    })
+    .then(res => res.text())
+    .then(msg => {
+        alert(msg);
+        fecharModal();
+        window.location.href = "/painel-professor"; // ou onde você quiser mandar
+    });
 }
 
 // ===============================================================

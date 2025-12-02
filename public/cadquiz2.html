@@ -109,6 +109,33 @@
             </section>
         </footer>
 
+        <div id="modalPublicar" class="modal">
+            <div class="modal-content">
+                <h2>Publicar Quiz</h2>
+
+                <p>Selecione em quais turmas este quiz será publicado:</p>
+
+                <div id="listaTurmas"></div>
+
+                <p style="margin-top: 10px;">Visibilidade do quiz:</p>
+
+                <label>
+                    <input type="radio" name="visibilidade" value="turmas" checked>
+                    Apenas alunos das turmas escolhidas
+                </label><br>
+
+                <label>
+                    <input type="radio" name="visibilidade" value="publico">
+                    Qualquer pessoa com o ID do quiz
+                </label>
+
+                <div class="modal-buttons">
+                    <button onclick="confirmarPublicacao()">Publicar</button>
+                    <button onclick="fecharModal()">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
         <script src="cadquiz2.js"></script>
     </body>
 </html>

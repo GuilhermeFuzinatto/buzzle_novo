@@ -1,5 +1,10 @@
 const user = JSON.parse(localStorage.getItem('usuario'));
 
+window.onload = () => {
+    listarTurma();
+    listarQuizzes();
+};
+
 // Função para listar as turmas
 async function listarTurma() {
     
@@ -49,4 +54,35 @@ function selecTurma(id, nome, desc, prid){
         window.location.href = 'turmaprof.html';
     }
     
+}
+
+async function listarQuizzes() {
+    const pr_id = user.id;
+
+    const res = await fetch(`/quiz/prof/${pr_id}`);
+    const quizzes = await res.json();
+
+    const enviadas = document.querySelector("#secatvenv #secroladora");
+    const encerradas = document.querySelector("#secatvenc #secroladora");
+
+    enviadas.innerHTML = "";
+    encerradas.innerHTML = "";
+
+    if (quizzes.length === 0) {
+        enviadas.innerHTML = "<p>Nenhuma atividade criada.</p>";
+        encerradas.innerHTML = "<p>Nenhuma atividade encerrada.</p>";
+        return;
+    }
+
+    quizzes.forEach(qz => {
+        const div = document.createElement("button");
+        div.className = "divatv";
+        div.innerText = qz.qz_nome;
+
+        if (new Date(qz.qz_prazo) > new Date()) {
+            enviadas.appendChild(div);
+        } else {
+            encerradas.appendChild(div);
+        }
+    });
 }

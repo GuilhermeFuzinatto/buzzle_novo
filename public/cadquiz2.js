@@ -331,7 +331,7 @@ function confirmarPublicacao() {
     .then(msg => {
         alert(msg);
         fecharModal();
-        window.location.href = "/painel-professor"; // ou onde você quiser mandar
+        window.location.href = "homeprof.html";
     });
 }
 

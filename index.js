@@ -54,9 +54,11 @@ db.serialize(() => {
     db.run(`
         CREATE TABLE IF NOT EXISTS Quiz(
             qz_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            qz_nome VARCHAR(40) NOT NULL,
             qz_valor INTEGER NOT NULL,
             qz_prazo DATE NOT NULL,
             qz_pr_id VARCHAR(12),
+            qz_visibilidade TEXT DEFAULT 'turmas',
             FOREIGN KEY (qz_pr_id) REFERENCES Prof (pr_id)
         )
     `);
@@ -75,6 +77,15 @@ db.serialize(() => {
             av_correta BIT,
             av_pe_numero INTEGER,
             FOREIGN KEY (av_pe_numero) REFERENCES Pergunta (pe_numero)
+        )
+    `);
+    db.run(`
+        CREATE TABLE IF NOT EXISTS QuizPublicacao(
+            qp_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            qp_qz_id INTEGER NOT NULL,
+            qp_tu_id INTEGER,
+            FOREIGN KEY (qp_qz_id) REFERENCES Quiz(qz_id),
+            FOREIGN KEY (qp_tu_id) REFERENCES Turma(tu_id)
         )
     `);
 
@@ -357,6 +368,28 @@ app.post("/alternativa", (req, res) => {
     });
 });
 
+////////////////////////// Rotas para Publicar Quiz //////////////////////////
+////////////////////////// Rotas para Publicar Quiz //////////////////////////
+////////////////////////// Rotas para Publicar Quiz //////////////////////////
+
+app.post("/publicarQuiz", (req, res) => {
+    const { quiz_id, turmas, visibilidade } = req.body;
+
+    db.run(
+        `UPDATE Quiz SET qz_visibilidade = ? WHERE qz_id = ?`,
+        [visibilidade, quiz_id]
+    );
+
+    // salvar nas turmas
+    turmas.forEach(tu_id => {
+        db.run(
+            `INSERT INTO QuizPublicacao (qp_qz_id, qp_tu_id) VALUES (?, ?)`,
+            [quiz_id, tu_id]
+        );
+    });
+
+    res.send("Quiz publicado com sucesso!");
+});
 
 // Teste para verificar se o servidor está rodando
 app.get('/', (req, res) => {

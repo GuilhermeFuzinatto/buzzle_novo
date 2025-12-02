@@ -327,6 +327,37 @@ app.post('/quiz', (req, res) => {
     });
 });
 
+// Cadastrar pergunta
+app.post("/pergunta", (req, res) => {
+    const { pe_enunciado, pe_qz_id } = req.body;
+
+    const query = `
+        INSERT INTO Pergunta (pe_enunciado, pe_qz_id)
+        VALUES (?, ?)
+    `;
+
+    db.run(query, [pe_enunciado, pe_qz_id], function (err) {
+        if (err) return res.status(500).send("Erro ao cadastrar pergunta");
+        res.status(201).send({ id: this.lastID });
+    });
+});
+
+// Cadastrar alternativa
+app.post("/alternativa", (req, res) => {
+    const { av_texto, av_correta, av_pe_numero } = req.body;
+
+    const query = `
+        INSERT INTO Alternativa (av_texto, av_correta, av_pe_numero)
+        VALUES (?, ?, ?)
+    `;
+
+    db.run(query, [av_texto, av_correta, av_pe_numero], function (err) {
+        if (err) return res.status(500).send("Erro ao cadastrar alternativa");
+        res.status(201).send({ id: this.lastID });
+    });
+});
+
+
 // Teste para verificar se o servidor está rodando
 app.get('/', (req, res) => {
     res.send('Servidor está rodando e tabelas criadas!');
@@ -336,3 +367,4 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
+

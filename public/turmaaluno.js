@@ -38,7 +38,7 @@ async function listarQuizzesTurma() {
         const card = document.createElement("button");
         card.className = "divenv";
         card.innerText = qz.qz_nome;
-        card.onclick = selecQuiz('${quiz.qz_id}', '${quiz.qz_nome}', '${quiz.qz_valor}', '${quiz.qz_prazo}')
+        card.onclick = () => selecQuiz(qz.qz_id, qz.qz_nome, qz.qz_valor, qz.qz_prazo);
 
         const aindaAberto = new Date(qz.qz_prazo) > new Date();
 

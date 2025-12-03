@@ -323,14 +323,14 @@ app.put('/turma/tu_id/:tu_id', (req, res) => {
 
 // Cadastrar quiz
 app.post('/quiz', (req, res) => {
-    const {qz_nome, qz_valor, qz_prazo} = req.body;
+    const { qz_nome, qz_valor, qz_prazo, qz_pr_id } = req.body;
 
     if (!qz_nome || !qz_valor || !qz_prazo) {
         return res.status(400).send('todos os campos são obrigatórios.');
     }
 
-    const query = `INSERT INTO Quiz (qz_nome, qz_valor, qz_prazo) VALUES (?, ?, ?)`;
-    db.run(query, [qz_nome, qz_valor, qz_prazo], function (err) {
+    const query = `INSERT INTO Quiz (qz_nome, qz_valor, qz_prazo, qz_pr_id) VALUES (?, ?, ?, ?)`;
+    db.run(query, [qz_nome, qz_valor, qz_prazo, qz_pr_id], function (err) {
         if (err) {
             return res.status(500).send('Erro ao cadastrar.');
         }
@@ -367,6 +367,41 @@ app.post("/alternativa", (req, res) => {
         res.status(201).send({ id: this.lastID });
     });
 });
+
+// Listar quizes pro professor
+app.get("/quiz/prof/:pr_id", (req, res) => {
+    const pr_id = req.params.pr_id;
+
+    const query = `
+        SELECT *
+        FROM Quiz
+        WHERE qz_pr_id = ?
+    `;
+
+    db.all(query, [pr_id], (err, rows) => {
+        if (err) return res.status(500).send("Erro ao buscar quizzes");
+        res.json(rows);
+    });
+});
+
+ie:
+
+app.get("/quiz/publicados/:pr_id", (req, res) => {
+    const pr_id = req.params.pr_id;
+
+    const query = `
+        SELECT q.*, qp.qp_tu_id
+        FROM Quiz q
+        LEFT JOIN QuizPublicacao qp ON qp.qp_qz_id = q.qz_id
+        WHERE q.qz_pr_id = ?
+    `;
+
+    db.all(query, [pr_id], (err, rows) => {
+        if (err) return res.status(500).send("Erro ao buscar quizzes publicados");
+        res.json(rows);
+    });
+});
+
 
 ////////////////////////// Rotas para Publicar Quiz //////////////////////////
 ////////////////////////// Rotas para Publicar Quiz //////////////////////////

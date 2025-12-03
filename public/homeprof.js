@@ -5,6 +5,42 @@ window.onload = () => {
     listarQuizzes();
 };
 
+//CARROSSEL HOMEPAGE
+let currentIndex1 = 0;
+let currentIndex2 = 0;
+
+function moveSlide1(step) {
+  const viewport = document.querySelector('#seccarrossel1');
+  const track    = document.querySelector('#secroladora1');
+  const slides   = document.querySelectorAll('.divenv');
+  if (!viewport || !track || slides.length === 0) return;
+
+  const cardWidth   = slides[0].offsetWidth;
+  const gap         = parseInt(getComputedStyle(track).gap) || 0;
+  const unit        = cardWidth + gap;
+  const visible     = Math.max(1, Math.floor(viewport.offsetWidth / unit));
+  const maxIndex    = slides.length - visible;
+
+  currentIndex1 = Math.min(Math.max(0, currentIndex1 + step), maxIndex);
+  track.style.transform = `translateX(-${currentIndex1 * unit}px)`;
+}
+
+function moveSlide2(step) {
+  const viewport = document.querySelector('#seccarrossel2');
+  const track    = document.querySelector('#secroladora2');
+  const slides   = document.querySelectorAll('.divenc');
+  if (!viewport || !track || slides.length === 0) return;
+
+  const cardWidth   = slides[0].offsetWidth;
+  const gap         = parseInt(getComputedStyle(track).gap) || 0;
+  const unit        = cardWidth + gap;
+  const visible     = Math.max(1, Math.floor(viewport.offsetWidth / unit));
+  const maxIndex    = slides.length - visible;
+
+  currentIndex2 = Math.min(Math.max(0, currentIndex2 + step), maxIndex);
+  track.style.transform = `translateX(-${currentIndex2 * unit}px)`;
+}
+
 // Função para listar as turmas
 async function listarTurma() {
     
@@ -62,26 +98,30 @@ async function listarQuizzes() {
     const res = await fetch(`/quiz/prof/${pr_id}`);
     const quizzes = await res.json();
 
-    const enviadas = document.querySelector("#secatvenv #secroladora");
-    const encerradas = document.querySelector("#secatvenc #secroladora");
+    const enviadas   = document.getElementById("#secroladora1");
+    const encerradas = document.getElementById("#secroladora2");
 
     enviadas.innerHTML = "";
     encerradas.innerHTML = "";
 
     if (quizzes.length === 0) {
-        enviadas.innerHTML = "<p>Nenhuma atividade criada.</p>";
+        enviadas.innerHTML   = "<p>Nenhuma atividade criada.</p>";
         encerradas.innerHTML = "<p>Nenhuma atividade encerrada.</p>";
         return;
     }
 
     quizzes.forEach(qz => {
         const div = document.createElement("button");
-        div.className = "divatv";
-        div.innerText = qz.qz_nome;
 
-        if (new Date(qz.qz_prazo) > new Date()) {
+        const aindaAberto = new Date(qz.qz_prazo) > new Date();
+
+        if (aindaAberto) {
+            div.className = "divenv";
+            div.innerText = qz.qz_nome;
             enviadas.appendChild(div);
         } else {
+            div.className = "divenc";
+            div.innerText = qz.qz_nome;
             encerradas.appendChild(div);
         }
     });

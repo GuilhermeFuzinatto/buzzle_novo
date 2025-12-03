@@ -97,6 +97,19 @@ db.serialize(() => {
             FOREIGN KEY (qp_tu_id) REFERENCES Turma(tu_id)
         )
     `);
+    db.run(`
+        CREATE TABLE IF NOT EXISTS Resposta (
+            re_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            re_data TEXT,
+            re_hora TEXT,
+            re_certas INTEGER,
+            re_nota INTEGER,
+            re_al_id INTEGER,
+            re_qz_id INTEGER,
+            FOREIGN KEY (re_al_id) REFERENCES Aluno(al_id),
+            FOREIGN KEY (re_qz_id) REFERENCES Quiz(qz_id)
+        )
+    `);
 
     console.log('Tabelas criadas com sucesso.');
 });
@@ -500,6 +513,105 @@ app.post("/publicarQuiz", (req, res) => {
 
     res.send("Quiz publicado com sucesso!");
 });
+
+////////////////////////// Rotas para Responder Quiz //////////////////////////
+////////////////////////// Rotas para Responder Quiz //////////////////////////
+////////////////////////// Rotas para Responder Quiz //////////////////////////
+
+app.get("/quiz/:qz_id/completo", (req, res) => {
+    const { qz_id } = req.params;
+
+    const queryPerguntas = `
+        SELECT * FROM Pergunta WHERE pe_qz_id = ?
+    `;
+
+    db.all(queryPerguntas, [qz_id], (err, perguntas) => {
+        if (err) return res.status(500).send("Erro ao buscar perguntas");
+
+        if (perguntas.length === 0)
+            return res.json({ perguntas: [] });
+
+        const ids = perguntas.map(p => p.pe_numero);
+
+        const queryAlternativas = `
+            SELECT * FROM Alternativa
+            WHERE av_pe_numero IN (${ids.map(_ => '?').join(',')})
+        `;
+
+        db.all(queryAlternativas, ids, (err, alternativas) => {
+            if (err) return res.status(500).send("Erro ao buscar alternativas");
+
+            // Agrupar alternativas nas perguntas
+            perguntas.forEach(p => {
+                p.alternativas = alternativas.filter(a => a.av_pe_numero === p.pe_numero);
+            });
+
+            res.json({ perguntas });
+        });
+    });
+});
+
+app.post("/quiz/iniciar", (req, res) => {
+    const { al_id, qz_id } = req.body;
+
+    const data = new Date();
+    const re_data = data.toISOString().split('T')[0];
+    const re_hora = data.toTimeString().slice(0, 8);
+
+    const query = `
+        INSERT INTO Resposta (re_data, re_hora, re_certas, re_nota, re_al_id, re_qz_id)
+        VALUES (?, ?, 0, 0, ?, ?)
+    `;
+
+    db.run(query, [re_data, re_hora, al_id, qz_id], function(err){
+        if (err) return res.status(500).send("Erro ao iniciar tentativa");
+
+        res.json({ re_id: this.lastID });
+    });
+});
+
+app.post("/quiz/finalizar", (req, res) => {
+    const { re_id, respostas } = req.body;
+    // respostas = [ { pe_numero: X, av_numero: Y }, ... ]
+
+    // Pegar alternativas corretas
+    const perguntaIds = respostas.map(r => r.pe_numero);
+
+    const query = `
+        SELECT * FROM Alternativa
+        WHERE av_pe_numero IN (${perguntaIds.map(_ => '?').join(',')})
+    `;
+
+    db.all(query, perguntaIds, (err, todasAlts) => {
+        if (err) return res.status(500).send("Erro na correção");
+
+        let certas = 0;
+
+        respostas.forEach(r => {
+            const corretas = todasAlts.filter(a =>
+                a.av_pe_numero === r.pe_numero && a.av_correta === 1
+            );
+
+            if (corretas.length > 0 && corretas[0].av_numero === r.av_numero)
+                certas++;
+        });
+
+        const nota = certas * 10; // você ajusta como quiser
+
+        db.run(
+            `UPDATE Resposta SET re_certas=?, re_nota=? WHERE re_id=?`,
+            [certas, nota, re_id],
+            err2 => {
+                if (err2) return res.status(500).send("Erro ao salvar resultado");
+                res.json({ certas, nota });
+            }
+        );
+    });
+});
+
+/////////////////////////// Outras Merdas Malditas ////////////////////////////
+/////////////////////////// Outras Merdas Malditas ////////////////////////////
+/////////////////////////// Outras Merdas Malditas ////////////////////////////
 
 // Teste para verificar se o servidor está rodando
 app.get('/', (req, res) => {

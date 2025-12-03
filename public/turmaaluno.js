@@ -38,6 +38,7 @@ async function listarQuizzesTurma() {
         const card = document.createElement("button");
         card.className = "divenv";
         card.innerText = qz.qz_nome;
+        card.onclick = selecQuiz('${quiz.qz_id}', '${quiz.qz_nome}', '${quiz.qz_valor}', '${quiz.qz_prazo}')
 
         const aindaAberto = new Date(qz.qz_prazo) > new Date();
 
@@ -104,3 +105,17 @@ function moveSlide2(step) {
 
 // carregar tudo
 listarQuizzesTurma();
+
+// selecionar quiz
+function selecQuiz(id, nome, valor, prazo){
+    const dadosQuiz = {
+        id: id,
+        nome: nome,
+        valor: valor,
+        prazo: prazo
+    };
+
+    localStorage.setItem("quiz", JSON.stringify(dadosQuiz));
+
+    window.location.href = "quizaluno.html";
+}

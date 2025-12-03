@@ -609,6 +609,42 @@ app.post("/quiz/finalizar", (req, res) => {
     });
 });
 
+///////////////////////// Rotas pro Relatorio Eu Acho /////////////////////////
+///////////////////////// Rotas pro Relatorio Eu Acho /////////////////////////
+///////////////////////// Rotas pro Relatorio Eu Acho /////////////////////////
+
+app.get('/quiz/:qz_id', (req, res) => {
+    const { qz_id } = req.params;
+    const query = `SELECT * FROM Quiz WHERE qz_id = ?`;
+
+    db.get(query, [qz_id], (err, row) => {
+        if (err) return res.status(500).send('Erro ao buscar quiz.');
+        if (!row) return res.status(404).send('Quiz não encontrado.');
+        res.json(row);
+    });
+});
+
+app.get('/quiz/:qz_id/respostas', (req, res) => {
+  const { qz_id } = req.params;
+
+  const query = `
+    SELECT r.re_id, r.re_data, r.re_hora, r.re_certas, r.re_nota, r.re_al_id, r.re_qz_id,
+           a.al_nome, a.al_email
+    FROM Resposta r
+    LEFT JOIN Aluno a ON r.re_al_id = a.al_id
+    WHERE r.re_qz_id = ?
+  `;
+
+  db.all(query, [qz_id], (err, rows) => {
+    if (err) {
+      console.error('Erro ao buscar respostas:', err);
+      return res.status(500).send('Erro ao buscar respostas.');
+    }
+    res.json(rows);
+  });
+});
+
+
 /////////////////////////// Outras Merdas Malditas ////////////////////////////
 /////////////////////////// Outras Merdas Malditas ////////////////////////////
 /////////////////////////// Outras Merdas Malditas ////////////////////////////

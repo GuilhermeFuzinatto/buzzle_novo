@@ -104,25 +104,35 @@ async function listarQuizzes() {
     enviadas.innerHTML = "";
     encerradas.innerHTML = "";
 
-    if (quizzes.length === 0) {
-        enviadas.innerHTML   = "<p>Nenhuma atividade criada.</p>";
-        encerradas.innerHTML = "<p>Nenhuma atividade encerrada.</p>";
-        return;
-    }
+    // Separar quizzes enviados e encerrados
+    const enviadasLista = quizzes.filter(q => new Date(q.qz_prazo) > new Date());
+    const encerradasLista = quizzes.filter(q => new Date(q.qz_prazo) <= new Date());
 
-    quizzes.forEach(qz => {
-        const div = document.createElement("button");
-
-        const aindaAberto = new Date(qz.qz_prazo) > new Date();
-
-        if (aindaAberto) {
+    // ---------------------------
+    //   QUIZZES ENVIADOS
+    // ---------------------------
+    if (enviadasLista.length === 0) {
+        enviadas.innerHTML = "<p>Nenhuma atividade enviada.</p>";
+    } else {
+        enviadasLista.forEach(qz => {
+            const div = document.createElement("button");
             div.className = "divenv";
             div.innerText = qz.qz_nome;
             enviadas.appendChild(div);
-        } else {
+        });
+    }
+
+    // ---------------------------
+    //   QUIZZES ENCERRADOS
+    // ---------------------------
+    if (encerradasLista.length === 0) {
+        encerradas.innerHTML = "<p>Nenhuma atividade encerrada.</p>";
+    } else {
+        encerradasLista.forEach(qz => {
+            const div = document.createElement("button");
             div.className = "divenc";
             div.innerText = qz.qz_nome;
             encerradas.appendChild(div);
-        }
-    });
+        });
+    }
 }

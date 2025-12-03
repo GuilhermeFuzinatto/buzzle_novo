@@ -52,6 +52,15 @@ db.serialize(() => {
         )
     `);
     db.run(`
+        CREATE TABLE IF NOT EXISTS AlunoTurma(
+            AT_tu_id INTEGER,
+            AT_al_id INTEGER,
+            PRIMARY KEY (AT_tu_id, AT_al_id),
+            FOREIGN KEY (AT_tu_id) REFERENCES Turma (tu_id),
+            FOREIGN KEY (AT_al_id) REFERENCES Aluno (al_id)
+        )
+    `);
+    db.run(`
         CREATE TABLE IF NOT EXISTS Quiz(
             qz_id INTEGER PRIMARY KEY AUTOINCREMENT,
             qz_nome VARCHAR(40) NOT NULL,
@@ -314,6 +323,72 @@ app.put('/turma/tu_id/:tu_id', (req, res) => {
             return res.status(404).send('Turma não encontrada.');
         }
         res.send('Turma atualizada com sucesso.');
+    });
+});
+
+// Entrar aluno na turma
+app.post("/turma/:tu_id/addAluno", (req, res) => {
+    const { tu_id } = req.params;
+    const { al_id } = req.body;
+
+    db.run(
+        `INSERT INTO AlunoTurma (AT_tu_id, AT_al_id) VALUES (?, ?)`,
+        [tu_id, al_id],
+        function(err) {
+            if (err) return res.status(500).send("Erro ao adicionar aluno na turma");
+            res.send("Aluno adicionado com sucesso!");
+        }
+    );
+});
+
+// Listar turmas que o aluno participa
+app.get("/aluno/:al_id/turmas", (req, res) => {
+    const { al_id } = req.params;
+
+    const query = `
+        SELECT t.*
+        FROM AlunoTurma at
+        JOIN Turma t ON t.tu_id = at.AT_tu_id
+        WHERE at.AT_al_id = ?
+    `;
+
+    db.all(query, [al_id], (err, rows) => {
+        if (err) return res.status(500).send("Erro ao buscar turmas do aluno");
+        res.json(rows);
+    });
+});
+
+// Listar quizes na turma
+app.get("/turma/:tu_id/quizzes", (req, res) => {
+    const { tu_id } = req.params;
+
+    const query = `
+        SELECT q.*
+        FROM QuizPublicacao qp
+        JOIN Quiz q ON q.qz_id = qp.qp_qz_id
+        WHERE qp.qp_tu_id = ?
+    `;
+
+    db.all(query, [tu_id], (err, rows) => {
+        if (err) return res.status(500).send("Erro ao buscar quizzes da turma");
+        res.json(rows);
+    });
+});
+
+// Listar alunos na turma
+app.get("/turma/:tu_id/alunos", (req, res) => {
+    const { tu_id } = req.params;
+
+    const query = `
+        SELECT a.al_id, a.al_nome, a.al_email
+        FROM AlunoTurma at
+        JOIN Aluno a ON a.al_id = at.AT_al_id
+        WHERE at.AT_tu_id = ?
+    `;
+
+    db.all(query, [tu_id], (err, rows) => {
+        if (err) return res.status(500).send("Erro ao buscar alunos da turma");
+        res.json(rows);
     });
 });
 

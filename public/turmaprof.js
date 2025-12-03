@@ -39,6 +39,12 @@ async function listarQuizzesTurma() {
         card.className = "divenv";
         card.innerText = qz.qz_nome;
 
+        // Adiciona clique para abrir relatório do quiz
+        card.onclick = () => {
+            // Passa o id do quiz na query string
+            window.location.href = `relatorio.html?qz_id=${qz.qz_id}`;
+        };
+
         const aindaAberto = new Date(qz.qz_prazo) > new Date();
 
         if (aindaAberto) {

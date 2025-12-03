@@ -42,7 +42,7 @@
         </aside>
         <main>
             <section id="fundo">
-                <button>Entrar em Turma</button>
+                <button onclick="abrirModal()">Entrar em Turma</button>
                 <button>&nbsp;&nbsp;Entrar em&nbsp;&nbsp; Quiz</button>
             </section>
             <section id="secmain">
@@ -94,6 +94,17 @@
                 </div>
             </section>
         </footer>
+
+        <!-- ===== MODAL PARA ENTRAR NA TURMA ===== -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <h2>Entrar em Turma</h2>
+                <input type="number" id="inputTurmaId" placeholder="ID da Turma">
+                <button id="btnEntrarTurma">Entrar</button>
+                <button id="btnFecharModal">Fechar</button>
+            </div>
+        </div>
+
         <script src="homealuno.js"></script>
     </body>
 </html>

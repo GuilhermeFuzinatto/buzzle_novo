@@ -1,3 +1,5 @@
+const user = JSON.parse(localStorage.getItem("usuario"));
+
 // ===================== VARIÁVEIS GERAIS =====================
 
 let questoes = {};        // armazena todas as questões

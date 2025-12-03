@@ -98,8 +98,8 @@ async function listarQuizzes() {
     const res = await fetch(`/quiz/prof/${pr_id}`);
     const quizzes = await res.json();
 
-    const enviadas   = document.getElementById("#secroladora1");
-    const encerradas = document.getElementById("#secroladora2");
+    const enviadas   = document.getElementById("secroladora1");
+    const encerradas = document.getElementById("secroladora2");
 
     enviadas.innerHTML = "";
     encerradas.innerHTML = "";

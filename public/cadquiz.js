@@ -80,7 +80,7 @@ async function salvarQuiz() {
             qz_nome: nome,
             qz_valor: valor,
             qz_prazo: prazo,
-            qz_pr_id: user.pr_id
+            qz_pr_id: user.id
         })
     });
 

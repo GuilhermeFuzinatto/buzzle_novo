@@ -75,6 +75,7 @@ db.serialize(() => {
         CREATE TABLE IF NOT EXISTS Pergunta(
             pe_numero INTEGER PRIMARY KEY AUTOINCREMENT,
             pe_enunciado VARCHAR(200) NOT NULL,
+            pe_tipo INTEGER DEFAULT 1,
             pe_qz_id VARCHAR(12),
             FOREIGN KEY (pe_qz_id) REFERENCES Quiz (qz_id)
         )
@@ -428,14 +429,14 @@ app.post('/quiz', (req, res) => {
 
 // Cadastrar pergunta
 app.post("/pergunta", (req, res) => {
-    const { pe_enunciado, pe_qz_id } = req.body;
+    const { pe_enunciado, pe_qz_id, pe_tipo } = req.body;
 
     const query = `
-        INSERT INTO Pergunta (pe_enunciado, pe_qz_id)
-        VALUES (?, ?)
+        INSERT INTO Pergunta (pe_enunciado, pe_qz_id, pe_tipo)
+        VALUES (?, ?, ?)
     `;
 
-    db.run(query, [pe_enunciado, pe_qz_id], function (err) {
+    db.run(query, [pe_enunciado, pe_qz_id, pe_tipo], function (err) {
         if (err) return res.status(500).send("Erro ao cadastrar pergunta");
         res.status(201).send({ id: this.lastID });
     });
@@ -522,7 +523,13 @@ app.get("/quiz/:qz_id/completo", (req, res) => {
     const { qz_id } = req.params;
 
     const queryPerguntas = `
-        SELECT * FROM Pergunta WHERE pe_qz_id = ?
+        SELECT 
+            pe_numero,
+            pe_enunciado,
+            pe_qz_id,
+            pe_tipo
+        FROM Pergunta 
+        WHERE pe_qz_id = ?
     `;
 
     db.all(queryPerguntas, [qz_id], (err, perguntas) => {
@@ -573,39 +580,85 @@ app.post("/quiz/iniciar", (req, res) => {
 app.post("/quiz/finalizar", (req, res) => {
     const { re_id, respostas } = req.body;
     // respostas = [ { pe_numero: X, av_numero: Y }, ... ]
+    if (!re_id || !Array.isArray(respostas)) return res.status(400).send("Dados inválidos");
 
-    // Pegar alternativas corretas
-    const perguntaIds = respostas.map(r => r.pe_numero);
+    // 1) Obter o qz_id da tentativa
+    const queryRe = `SELECT re_qz_id FROM Resposta WHERE re_id = ?`;
+    db.get(queryRe, [re_id], (err, row) => {
+        if (err || !row) return res.status(500).send("Erro ao buscar tentativa");
 
-    const query = `
-        SELECT * FROM Alternativa
-        WHERE av_pe_numero IN (${perguntaIds.map(_ => '?').join(',')})
-    `;
+        const qz_id = row.re_qz_id;
 
-    db.all(query, perguntaIds, (err, todasAlts) => {
-        if (err) return res.status(500).send("Erro na correção");
+        // 2) Buscar todas as perguntas do quiz
+        const queryPerg = `SELECT pe_numero FROM Pergunta WHERE pe_qz_id = ?`;
+        db.all(queryPerg, [qz_id], (err, perguntas) => {
+            if (err) return res.status(500).send("Erro ao buscar perguntas");
 
-        let certas = 0;
+            const perguntaIds = perguntas.map(p => p.pe_numero);
+            if (perguntaIds.length === 0) return res.status(400).send("Quiz sem perguntas");
 
-        respostas.forEach(r => {
-            const corretas = todasAlts.filter(a =>
-                a.av_pe_numero === r.pe_numero && a.av_correta === 1
-            );
+            // 3) Buscar todas as alternativas para essas perguntas
+            const queryAlts = `
+                SELECT * FROM Alternativa
+                WHERE av_pe_numero IN (${perguntaIds.map(_ => '?').join(',')})
+            `;
+            db.all(queryAlts, perguntaIds, (err, todasAlts) => {
+                if (err) return res.status(500).send("Erro na correção");
 
-            if (corretas.length > 0 && corretas[0].av_numero === r.av_numero)
-                certas++;
+                // construir mapa de corretas por pergunta
+                const corretasMap = {}; // pe_numero -> Set(av_numero)
+                perguntaIds.forEach(id => corretasMap[id] = new Set());
+                todasAlts.forEach(a => {
+                    if (a.av_correta == 1) {
+                        corretasMap[a.av_pe_numero].add(a.av_numero);
+                    }
+                });
+
+                // montar seleções do aluno por pergunta
+                const selecoes = {}; // pe_numero -> Set(av_numero)
+                respostas.forEach(r => {
+                    if (!selecoes[r.pe_numero]) selecoes[r.pe_numero] = new Set();
+                    // permitir que frontend envie múltiplas entradas (uma por alternativa) ou arrays
+                    selecoes[r.pe_numero].add(r.av_numero);
+                });
+
+                let certas = 0;
+                let totalPoints = 0;
+
+                perguntaIds.forEach(pe => {
+                    const corretasSet = corretasMap[pe] || new Set();
+                    const correctCount = corretasSet.size || 0;
+                    const selectedSet = selecoes[pe] || new Set();
+
+                    // contar quantos selecionados estão corretos
+                    let selectedCorrect = 0;
+                    let selectedIncorrect = 0;
+                    for (let av of selectedSet) {
+                        if (corretasSet.has(av)) selectedCorrect++;
+                        else selectedIncorrect++;
+                    }
+
+                    if (correctCount > 0) {
+                        totalPoints += selectedCorrect / correctCount;
+                    } else {
+                        // sem alternativas corretas definidas, considera 0
+                    }
+
+                    // considera questão "certa" apenas se marcou todas corretas e nenhuma incorreta
+                    if (correctCount > 0 && selectedCorrect === correctCount && selectedIncorrect === 0) certas++;
+                });
+
+                const totalQuestions = perguntaIds.length;
+                const nota = Math.round((totalPoints / totalQuestions) * 10);
+
+                // atualizar a tabela Resposta com certas e nota
+                const upd = `UPDATE Resposta SET re_certas = ?, re_nota = ? WHERE re_id = ?`;
+                db.run(upd, [certas, nota, re_id], function(err) {
+                    if (err) return res.status(500).send("Erro ao salvar resultado");
+                    return res.json({ certas, nota });
+                });
+            });
         });
-
-        const nota = certas * 10; // você ajusta como quiser
-
-        db.run(
-            `UPDATE Resposta SET re_certas=?, re_nota=? WHERE re_id=?`,
-            [certas, nota, re_id],
-            err2 => {
-                if (err2) return res.status(500).send("Erro ao salvar resultado");
-                res.json({ certas, nota });
-            }
-        );
     });
 });
 

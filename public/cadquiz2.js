@@ -79,15 +79,35 @@ function criarPergunta() {
 
 function salvarQuestaoAtual() {
     const enun = document.getElementById("enuntxt").value;
-    const textos = [...document.querySelectorAll("#secalt input[type=text]")].map(i => i.value);
-    const checks = [...document.querySelectorAll(".checkinput")].map(c => c.checked);
+    const altDivs = [...document.querySelectorAll("#secalt div")];
+    const textos = altDivs.map(div => {
+        const inp = div.querySelector('input[type="text"]');
+        return inp ? inp.value : "";
+    });
+
+    const tipo = document.body.getAttribute("data-tipo") || "1";
+    let certas = [];
+
+    if (tipo === "3") {
+        // V/F: ler selects .selectVF
+        altDivs.forEach((div, i) => {
+            const sel = div.querySelector(".selectVF");
+            if (sel && sel.value === "V") certas.push(i);
+        });
+    } else {
+        const checks = altDivs.map(div => {
+            const chk = div.querySelector(".checkinput");
+            return chk ? chk.checked : false;
+        });
+        certas = checks.reduce((acc, v, i) => v ? [...acc, i] : acc, []);
+    }
 
     // salvar em estrutura
     questoes[questaoAtual] = {
-        tipo: document.body.getAttribute("data-tipo") || "1",
+        tipo,
         enunciado: enun,
         alternativas: textos,
-        certas: checks.reduce((acc, v, i) => v ? [...acc, i] : acc, [])
+        certas
     };
 }
 
@@ -114,7 +134,13 @@ function carregarQuestao(num) {
     voltarCheckbox();
 
     // dependendo do tipo, transformar ou marcar
-    if (q.tipo == "3") transformarParaVF();
+    if (q.tipo == "3") {
+        const selects = document.querySelectorAll(".selectVF");
+        selects.forEach((s, i) => s.value = q.certas.includes(i) ? "V" : "F");
+    } else {
+        const checks = document.querySelectorAll(".checkinput");
+        checks.forEach((chk, i) => chk.checked = q.certas.includes(i));
+    }
 
     if (q.tipo == "1" || q.tipo == "2") {
         const checks = document.querySelectorAll(".checkinput");
@@ -241,41 +267,131 @@ function voltarCheckbox() {
 // ===============================================================
 
 async function salvarTudo() {
-    salvarQuestaoAtual(); // salva a questão que estiver sendo editada
+    try {
+        // garante que a questão atual foi persistida na estrutura questoes
+        salvarQuestaoAtual();
 
-    const quiz_id = localStorage.getItem("quiz_id");
+        const quiz_id = Number(localStorage.getItem("quiz_id"));
+        if (!quiz_id) {
+            alert("ID do quiz não encontrado! Salve o quiz primeiro.");
+            return;
+        }
 
-    for (const num in questoes) {
-        const q = questoes[num];
+        // transforma o objeto questoes em uma lista ordenada pelos índices (numéricos)
+        const chaves = Object.keys(questoes)
+            .map(k => Number(k))
+            .filter(n => !Number.isNaN(n))
+            .sort((a,b) => a - b);
 
-        // 1. Enviar pergunta
-        const resPerg = await fetch("/pergunta", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                pe_enunciado: q.enunciado,
-                pe_qz_id: quiz_id
-            })
-        });
+        if (chaves.length === 0) {
+            alert("Nenhuma pergunta encontrada para salvar.");
+            return;
+        }
 
-        const dadosPerg = await resPerg.json();
-        const pergunta_id = dadosPerg.id;
+        console.log("Salvando quiz", quiz_id, "com perguntas:", chaves);
 
-        // 2. Enviar alternativas
-        for (let i = 0; i < q.alternativas.length; i++) {
-            await fetch("/alternativa", {
+        for (let num of chaves) {
+            const q = questoes[num];
+
+            // validações básicas (mensagens claras)
+            if (!q) {
+                throw new Error(`Questão ${num} inexistente no objeto questoes.`);
+            }
+            if (!q.enunciado || String(q.enunciado).trim() === "") {
+                alert(`A pergunta ${num} está sem enunciado.`);
+                return;
+            }
+            if (!q.alternativas || q.alternativas.length === 0) {
+                alert(`A pergunta ${num} não tem alternativas.`);
+                return;
+            }
+
+            // montar payload da pergunta
+            const perguntaPayload = {
+                pe_enunciado: String(q.enunciado).trim(),
+                pe_qz_id: quiz_id,
+                pe_tipo: Number(q.tipo) || 1
+            };
+
+            console.log("Enviando /pergunta payload:", perguntaPayload);
+
+            // enviar pergunta
+            const peRes = await fetch("/pergunta", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    av_texto: q.alternativas[i],
-                    av_correta: q.certas.includes(i) ? 1 : 0,
-                    av_pe_numero: pergunta_id
-                })
+                body: JSON.stringify(perguntaPayload)
             });
-        }
-    }
 
-    abrirModalPublicarQuiz(quiz_id);
+            const peText = await peRes.text();
+            if (!peRes.ok) {
+                // mostra resposta textual do servidor para debugging (ex: "Erro ao cadastrar pergunta")
+                console.error("Resposta /pergunta (erro):", peText);
+                throw new Error("Erro ao salvar pergunta: " + peText);
+            }
+
+            // tenta parsear resposta de sucesso
+            let peData;
+            try {
+                peData = JSON.parse(peText);
+            } catch (err) {
+                console.error("Resposta /pergunta não é JSON mas retornou ok:", peText);
+                throw new Error("Resposta do servidor inesperada ao cadastrar pergunta: " + peText);
+            }
+
+            const pe_numero = peData.id;
+            console.log(`Pergunta ${num} salva com id ${pe_numero}`);
+
+            // SALVAR ALTERNATIVAS — q.alternativas é array de strings (conforme seu código)
+            for (let idx = 0; idx < q.alternativas.length; idx++) {
+                const texto = String(q.alternativas[idx] ?? "").trim();
+                if (!texto) {
+                    alert(`A pergunta ${num} tem alternativa vazia (índice ${idx}).`);
+                    return;
+                }
+
+                // q.certas contém índices das alternativas corretas (mesmo para tipo 3, onde "V" guardamos índices)
+                const correta = Array.isArray(q.certas) ? q.certas.includes(idx) : false;
+
+                const altPayload = {
+                    av_texto: texto,
+                    av_correta: correta ? 1 : 0,
+                    av_pe_numero: pe_numero
+                };
+
+                console.log("Enviando /alternativa payload:", altPayload);
+
+                const avRes = await fetch("/alternativa", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(altPayload)
+                });
+
+                const avText = await avRes.text();
+                if (!avRes.ok) {
+                    console.error("Resposta /alternativa (erro):", avText);
+                    throw new Error("Erro ao salvar alternativa: " + avText);
+                }
+
+                // tenta parsear retorno (se quiser usar id)
+                try {
+                    const avData = JSON.parse(avText);
+                    console.log("Alternativa salva id:", avData.id);
+                } catch {
+                    console.log("Alternativa salva (resposta não-json):", avText);
+                }
+            } // fim loop alternativas
+
+        } // fim loop perguntas
+
+        console.log("Todas perguntas e alternativas salvas com sucesso.");
+        // abre modal de publicação
+        abrirModalPublicarQuiz(quiz_id);
+
+    } catch (err) {
+        console.error(err);
+        // mostra mensagem sugestiva pro usuário e log no console
+        alert("Erro ao salvar quiz:\n" + (err && err.message ? err.message : String(err)));
+    }
 }
 
 // ===============================================================

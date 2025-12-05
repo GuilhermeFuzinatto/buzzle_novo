@@ -432,12 +432,15 @@ app.post("/pergunta", (req, res) => {
     const { pe_enunciado, pe_qz_id, pe_tipo } = req.body;
 
     const query = `
-        INSERT INTO Pergunta (pe_enunciado, pe_qz_id, pe_tipo)
+        INSERT INTO Pergunta (pe_enunciado, pe_tipo, pe_qz_id)
         VALUES (?, ?, ?)
     `;
 
-    db.run(query, [pe_enunciado, pe_qz_id, pe_tipo], function (err) {
-        if (err) return res.status(500).send("Erro ao cadastrar pergunta");
+    db.run(query, [pe_enunciado, pe_tipo, pe_qz_id], function (err) {
+        if (err) {
+            console.error("Erro ao cadastrar pergunta:", err.message);
+            return res.status(500).send("Erro ao cadastrar pergunta");
+        }
         res.status(201).send({ id: this.lastID });
     });
 });

@@ -226,7 +226,7 @@ main {
     color: #ffda33;
 }
 
-#seccarrossel{
+#seccarrossel1, #seccarrossel2{
     width: calc(100% - 8rem);
     height: 100%;
     /*background-color: purple;*/
@@ -235,16 +235,17 @@ main {
     overflow: hidden;
 }
 
-#secroladora{
+#secroladora1, #secroladora2{
     width: auto;
     height: 100%;
     display: flex;
     align-items: center;
     /*background-color: plum;*/
     gap: 1rem;
+    transition: 0.5s;
 }
 
-.divatv{
+.divenv, .divenc{
     width: 15rem;
     height: 15rem;
     background-color: #fdfdfd;
@@ -256,7 +257,7 @@ main {
     transition: 0.5s;
 }
 
-.divatv:hover{
+.divenv:hover, .divenc:hover{
     filter: brightness(95%);
     border: 0.4rem solid #ffda33;
 }
@@ -269,25 +270,20 @@ footer {
     background-image: linear-gradient(#fdfdfd, #e4e4e4);
 }
 
-#secfooter{
+#secfooter {
     width: 100%;
     height: 100%;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;   /* centraliza horizontal */
+    align-items: center;       /* centraliza vertical */
 }
 
-#secfooter div{
-    width: 30%;
-    height: 100%;
-}
-
-.divfot{
+.divfot {
     display: flex;
-    justify-content: space-evenly;
-    align-items: center;
+    gap: 3rem;                 /* espaço entre as imagens */
 }
 
-.divfot img{
+.divfot img {
     height: 8rem;
 }
 

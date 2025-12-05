@@ -27,7 +27,7 @@ async function carregarQuiz() {
         const resInit = await fetch('/quiz/iniciar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ al_id: user.al_id, qz_id: quiz.id })
+            body: JSON.stringify({ al_id: user.id, qz_id: quiz.id })
         });
         const initData = await resInit.json();
         re_id = initData.re_id;
